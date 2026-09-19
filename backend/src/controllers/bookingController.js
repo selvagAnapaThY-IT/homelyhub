@@ -23,14 +23,19 @@ const verifyPayment = async (req, res) => {
     const { orderId, bookingDetails, forceStatus, paymentId } = req.body;
 
     if (forceStatus === "success") {
+      const userId = req.user._id || req.user.id;
       const newBooking = await Booking.create({
         property: bookingDetails.propertyId,
-        user: req.user.id,
+        user: userId,
         price: bookingDetails.price,
         fromDate: bookingDetails.fromDate,
+        fromdate: bookingDetails.fromDate,
         toDate: bookingDetails.toDate,
+        todate: bookingDetails.toDate,
         guests: bookingDetails.guests,
+        guest: bookingDetails.guests,
         numberOfNights: bookingDetails.nights,
+        numberofnights: bookingDetails.nights,
         paid: true,
       });
 
@@ -42,17 +47,17 @@ const verifyPayment = async (req, res) => {
               bookingId: newBooking._id,
               fromDate: bookingDetails.fromDate,
               toDate: bookingDetails.toDate,
-              userId: req.user._id,
+              userId: userId,
             },
           },
         },
-        { returnDocument: "after", runValidators: true } // replaces { new: true }
+        { returnDocument: "after", runValidators: true }
       );
 
       res.json({
         success: true,
         message: "Payment verified and booking created successfully",
-        paymentId, // now defined
+        paymentId,
         orderId,
         bookingId: newBooking._id,
       });
@@ -64,6 +69,7 @@ const verifyPayment = async (req, res) => {
       });
     }
   } catch (error) {
+    console.error("verifyPayment Error:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -74,7 +80,8 @@ const verifyPayment = async (req, res) => {
 
 const getUserBookings = async (req, res) => {
     try {
-        const bookings = await Booking.find({ user: req.user._id }).populate("property");
+        const userId = req.user._id || req.user.id;
+        const bookings = await Booking.find({ user: userId });
         res.status(200).json({
             status: "success",
             data: {
@@ -82,7 +89,8 @@ const getUserBookings = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(401).json({
+        console.error("getUserBookings Error:", error);
+        res.status(500).json({
             status: "fail",
             message: error.message
         });

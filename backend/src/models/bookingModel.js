@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import "./propertymodel.js";
+import "./usermodel.js";
 
 const bookingSchema = new mongoose.Schema(
     {
@@ -27,16 +29,28 @@ const bookingSchema = new mongoose.Schema(
         fromdate: {
             type: Date,
         },
+        fromDate: {
+            type: Date,
+        },
 
         todate: {
+            type: Date,
+        },
+        toDate: {
             type: Date,
         },
 
         guest: {
             type: Number,
         },
+        guests: {
+            type: Number,
+        },
 
         numberofnights: {
+            type: Number,
+        },
+        numberOfNights: {
             type: Number,
         },
     },
