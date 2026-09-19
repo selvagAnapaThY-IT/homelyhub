@@ -45,15 +45,10 @@ import jwt from "jsonwebtoken";
 // anyone holding a token can read what is inside it. It cannot
 // be CHANGED without the secret, but it CAN be read.
 const signinToken = (id) => {
-  // jwt.sign takes three things:
-  //   { id }              -> what to write on the ticket
-  //   JWT_SECRET          -> the secret used to sign it. It is
-  //                          in .env, never in the code, and
-  //                          never on GitHub.
-  //   expiresIn           -> after this time the ticket is dead
-  //                          and the user must log in again.
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+  const secret = process.env.JWT_SECRET || "podasuthumama";
+  const expiresIn = process.env.JWT_EXPIRES_IN || "90d";
+  return jwt.sign({ id }, secret, {
+    expiresIn,
   });
 };
 
@@ -68,34 +63,17 @@ const createSendToken = (user, statusCode, res) => {
   // Step 1 - make the ticket for THIS user.
   // user._id is the id mongodb gave them.
   const token = signinToken(user._id);
+  const cookieDays = Number(process.env.JWT_COOKIE_EXPIRES_IN || 90);
+  const isProd = process.env.NODE_ENV === "production" || !!process.env.ORIGIN_ACCESS_URL;
 
   // Step 2 - the rules for the cookie.
   const cookieOptions = {
-    // When should the browser throw this cookie away?
-    // Date.now() is right now in milliseconds. Then
-    // days * 24 hours * 60 minutes * 60 seconds * 1000 turns
-    // JWT_COOKIE_EXPIRES_IN (a number of days) into milliseconds.
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      Date.now() + cookieDays * 24 * 60 * 60 * 1000
     ),
-
-    // httpOnly: true = JavaScript in the browser CANNOT read
-    // this cookie. Only the browser can send it back to us.
-    // This stops a bad script on the page from stealing the
-    // token. This one line is real security, not decoration.
     httpOnly: true,
-
-    // sameSite decides whether the cookie is sent when the
-    // request comes from a different website address.
-    // On the live site the frontend and backend sit on
-    // different addresses, so we need "none".
-    // On our laptop both are localhost, so "lax" is fine.
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-
-    // secure: true = only send this cookie over https.
-    // On the laptop we use plain http, so it must be false
-    // there, otherwise the cookie would never arrive.
-    secure: process.env.NODE_ENV === "production",
+    sameSite: isProd ? "none" : "lax",
+    secure: isProd,
   };
 
   // Step 3 - attach the cookie to the reply.

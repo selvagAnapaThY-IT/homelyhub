@@ -116,59 +116,36 @@ const logout = (req, res) => {
 // that user still exist? did he change his password since?
 const protect = async (req, res, next) => {
   try {
-    // Step 1 - find the token. It can come in 2 places.
     let token;
-    // Place 1 - the Authorization header, used by Postman
-    // and mobile apps. It looks like:  Bearer <token>
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
     ) {
-      // split on the space, [1] is the part after 'Bearer'
       token = req.headers.authorization.split(" ")[1];
-      // Place 2 - the cookie, which the browser sends by itself.
-      // We skip 'loggedout' - that is our own logout marker.
-    } else if (req.cookies.jwt && req.cookies.jwt !== "loggedout") {
+    } else if (req.cookies?.jwt && req.cookies.jwt !== "loggedout") {
       token = req.cookies.jwt;
     }
 
-    // Step 2 - no token at all means not logged in.
-    if (!token) {
+    if (!token || token === "undefined" || token === "null") {
       throw new Error("You are not logged in!! Please login to access");
     }
 
-    // Step 3 - verify does 2 jobs together:
-    //   is the signature made with OUR secret? (not a fake)
-    //   has it expired?  (JWT_EXPIRES_IN)
-    // If either fails it throws, and catch below sends 401.
-    // decoded is what was inside: { id, iat, exp }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = process.env.JWT_SECRET || "podasuthumama";
+    const decoded = jwt.verify(token, secret);
 
-    // Step 4 - the token is real, but is the user still there?
-    // The account may have been deleted after the token was
-    // given. Real ticket, but the person is gone.
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
       throw new Error("the user belonging to the token dosen't exists");
     }
 
-    // Step 5 - the stolen token case. If someone stole your
-    // token and you then changed your password, the old token
-    // must stop working. iat = 'issued at', when the token was
-    // made. This method came from userModel.js on day 2.
     if (currentUser.changedPasswordAfter(decoded.iat)) {
       throw new Error("user recently changed the password, Please login again");
     }
 
-    // Step 6 - all checks passed. Stick the user on the
-    // request, so every function after this can just say
-    // req.user without asking the database again.
     req.user = currentUser;
-
-    // 'guard is happy, carry on'. Without next() the request
-    // would hang forever.
     next();
   } catch (error) {
+    console.error("Protect Auth Error:", error.message);
     res.status(401).json({
       status: "fail",
       message: error.message,
