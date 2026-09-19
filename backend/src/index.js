@@ -18,15 +18,28 @@ app.use(express.urlencoded({
     limit: "50mb",
     extended: true
 }));
+const allowedOrigins = [
+    "https://homelyhubselva.netlify.app",
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+    "http://localhost:3000"
+];
+
+if (process.env.ORIGIN_ACCESS_URL) {
+    allowedOrigins.push(process.env.ORIGIN_ACCESS_URL);
+}
+
 app.use(cors({
-    origin: ["https://homelyhubselva.netlify.app", "http://127.0.0.1:5173", "http://localhost:3000"],
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(null, true);
+        }
+    },
     credentials: true,
 }));
 app.use(cookieParser());
-app.use(cors({
-    origin:process.env.ORIGIN_ACCESS_URL || "http://localhost:5173",
-    credentials: true,
-}));
 // Database
 connectDB();
 

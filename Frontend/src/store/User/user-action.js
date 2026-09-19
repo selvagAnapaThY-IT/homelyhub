@@ -11,6 +11,9 @@ export const getSignup = (user) => async (dispatch) => {
             user
         );
 
+        if (data.token) {
+            localStorage.setItem("token", data.token);
+        }
         dispatch(UserActions.getSignupDetails(data.user));
     } catch (error) {
         dispatch(
@@ -32,6 +35,9 @@ export const getLogin = (user) => async (dispatch) => {
             user
         );
 
+        if (data.token) {
+            localStorage.setItem("token", data.token);
+        }
         dispatch(UserActions.getLoginDetails(data.user));
     } catch (error) {
         dispatch(
@@ -150,9 +156,10 @@ export const updatePassword = (passwords) => async (dispatch) => {
 export const logout = () => async (dispatch) => {
     try {
         await axiosInstance.get("/v1/rent/user/logout");
-
+        localStorage.removeItem("token");
         dispatch(UserActions.getLogout(null));
     } catch (error) {
+        localStorage.removeItem("token");
         dispatch(
             UserActions.getError(
                 error.response?.data?.message || "Logout failed"
