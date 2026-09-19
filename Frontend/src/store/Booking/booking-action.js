@@ -22,5 +22,6 @@ export const fetchUserBookings = () => async (dispatch) => {
     dispatch(setBookings(bookings));
   } catch (error) {
     console.error("Error fetching bookings:", error);
+    dispatch(setBookings([]));
   }
 };
