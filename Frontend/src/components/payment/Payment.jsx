@@ -55,6 +55,7 @@ const Payment = () => {
             toDate: checkoutDate,
             guests,
             price: totalPrice,
+            nights,
           },
           forceStatus: "success",
         })

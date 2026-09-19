@@ -26,9 +26,11 @@ const PaymentForm = ({
       return true;
     }
 
+    if (!currentBookings || !Array.isArray(currentBookings)) return false;
+
     return currentBookings.some((booking) => {
-      const startDate = moment(booking.fromDate).startOf("day");
-      const endDate = moment(booking.toDate).startOf("day");
+      const startDate = moment(booking.fromDate || booking.fromdate).startOf("day");
+      const endDate = moment(booking.toDate || booking.todate).startOf("day");
       const currentMoment = moment(current.toDate()).startOf("day");
 
       return (
