@@ -50,8 +50,7 @@ const verifyPayment = async (req, res) => {
               userId: userId,
             },
           },
-        },
-        { returnDocument: "after", runValidators: true }
+        }
       );
 
       res.json({

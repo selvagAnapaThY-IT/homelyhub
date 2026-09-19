@@ -30,8 +30,8 @@ export const verifyPayment = (verifyData) => async (dispatch) => {
     if (!response) throw new Error("Failed to verify payment");
     dispatch(paymentActions.getVerifySuccess(response.data));
   } catch (error) {
-    dispatch(
-      paymentActions.getError(error.response?.data?.message || error.message)
-    );
+    const errMsg = error.response?.data?.message || error.message;
+    dispatch(paymentActions.getError(errMsg));
+    throw new Error(errMsg);
   }
 };
