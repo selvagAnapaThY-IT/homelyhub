@@ -47,16 +47,20 @@ const PaymentForm = ({
       phoneNumber: "",
     },
     onSubmit: async ({ value }) => {
-      const [checkinDate, checkoutDate] = value.dateRange;
-      const nights = moment(checkoutDate).diff(moment(checkinDate), "days");
+      const [checkinDate, checkoutDate] = value.dateRange || [];
+      const diffNights = moment(checkoutDate, "YYYY-MM-DD").diff(moment(checkinDate, "YYYY-MM-DD"), "days");
+      const nightsCount = diffNights > 0 ? diffNights : 1;
+      const nightlyPrice = Number(price) || 500;
+      const finalTotalPrice = calculatedPrice > 0 ? calculatedPrice : nightlyPrice * nightsCount;
       const { name, guests, phoneNumber } = value;
+
       if (name && guests && phoneNumber && checkinDate && checkoutDate) {
         await dispatch(
           setPaymentDetails({
             checkinDate: checkinDate,
             checkoutDate: checkoutDate,
-            nights,
-            totalPrice: calculatedPrice,
+            nights: nightsCount,
+            totalPrice: finalTotalPrice,
             propertyName,
             address,
             guests: Number(guests),
