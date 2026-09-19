@@ -10,8 +10,12 @@ const MyAccomodation = ({ accomodation }) => {
           <div className="myaccomodation-image-container col-lg-3 col-md-3">
             <img
               className="myaccomodation-img"
-              src={accomodation.images[0].url}
+              src={accomodation.images?.[0]?.url || "/assets/image1.jpeg"}
               alt={accomodation.propertyName}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/assets/image1.jpeg";
+              }}
             />
           </div>
           <div className="myaccomodation-information col-lg-9 col-md-9">

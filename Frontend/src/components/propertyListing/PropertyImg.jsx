@@ -20,7 +20,11 @@ const PropertyImg = ({ images = [] }) => {
 
         <div className="img-item">
           <img
-            src={firstImageUrl}
+            src={firstImageUrl || "/assets/image1.jpeg"}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/assets/image1.jpeg";
+            }}
             className="images"
             style={{
               borderTopLeftRadius: "10px",
@@ -34,7 +38,11 @@ const PropertyImg = ({ images = [] }) => {
           <div key={index}>
             <img
               className="images"
-              src={image?.url || ""}
+              src={image?.url || "/assets/image2.jpeg"}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = `/assets/image${(index % 8) + 1}.jpeg`;
+              }}
               alt={`property-${index + 2}`}
             />
           </div>
@@ -42,7 +50,11 @@ const PropertyImg = ({ images = [] }) => {
         <div>
           <img
             className="images"
-            src={fifthImageUrl}
+            src={fifthImageUrl || "/assets/image3.jpeg"}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/assets/image3.jpeg";
+            }}
             alt={`property-5`}
             style={{ borderBottomRightRadius: "10px" }}
           />

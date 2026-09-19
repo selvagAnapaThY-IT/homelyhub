@@ -221,8 +221,12 @@ const AiTripPlanner = () => {
               {result.properties.map((property) => (
                 <article className="trip-property" key={property._id}>
                   <img
-                    src={property.images[0].url}
+                    src={property.images?.[0]?.url || "/assets/image1.jpeg"}
                     alt={property.propertyName}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/assets/image1.jpeg";
+                    }}
                   />
                   <div className="trip-property-body">
                     <h4>{property.propertyName}</h4>

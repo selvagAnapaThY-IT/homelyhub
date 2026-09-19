@@ -11,7 +11,14 @@ const Card = ({ id, image, name, address, price }) => {
         <figure className="property">
 
             <Link to={`/propertylist/${id}`}>
-                <img src={image} alt="Propertyimg" />
+                <img
+                    src={image || "/assets/image1.jpeg"}
+                    alt="Propertyimg"
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/assets/image1.jpeg";
+                    }}
+                />
             </Link>
 
             <h4>{name}</h4>

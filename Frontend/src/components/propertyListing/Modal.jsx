@@ -28,7 +28,15 @@ const Modal = ({ images, onClose }) => {
         </button>
         <div className="modal-images-container">
           {images.map((image, index) => (
-            <img key={index} src={image.url} alt={`Image ${index + 1}`} />
+            <img
+              key={index}
+              src={image.url || "/assets/image1.jpeg"}
+              alt={`Image ${index + 1}`}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = `/assets/image${(index % 8) + 1}.jpeg`;
+              }}
+            />
           ))}
         </div>
       </div>
