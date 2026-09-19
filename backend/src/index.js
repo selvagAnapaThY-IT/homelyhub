@@ -8,25 +8,34 @@ import connectDB from "./utils/db.js";
 import { propertyRouter } from "./routes/propertyRouter.js";
 import router from "./routes/userRoutes.js";
 import { bookingRouter } from "./routes/bookingRoutes.js";
-
 import { tripRouter } from "./routes/tripRouter.js";
+
 const app = express();
 
-// Middleware
+// CORS - keep only ONE configuration
+const allowedOrigins = [
+    "https://homelyhubselva.netlify.app",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000"
+];
+
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// Body parsers
 app.use(express.json({ limit: "50mb" }));
+
 app.use(express.urlencoded({
     limit: "50mb",
     extended: true
 }));
-app.use(cors({
-    origin: ["https://homelyhubselva.netlify.app", "http://127.0.0.1:5173", "http://localhost:3000"],
-    credentials: true,
-}));
+
 app.use(cookieParser());
-app.use(cors({
-    origin:process.env.ORIGIN_ACCESS_URL || "http://localhost:5173",
-    credentials: true,
-}));
+
 // Database
 connectDB();
 
@@ -40,6 +49,7 @@ app.use("/api/v1/rent/user", router);
 app.use("/api/v1/rent/listings", propertyRouter);
 app.use("/api/v1/rent/booking", bookingRouter);
 app.use("/api/v1/rent/trip", tripRouter);
+
 // Server
 const PORT = process.env.PORT || 8080;
 
