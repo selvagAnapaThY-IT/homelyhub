@@ -117,14 +117,25 @@ const PaymentForm = ({
                     }}
                   />
                 </Space>
-                {calculatedPrice > 0 && (
-                  <div style={{ marginTop: "8px", fontWeight: "600", color: "#222" }}>
-                    {nightsCount} night{nightsCount !== 1 ? "s" : ""} × ₹{numericPrice} = <span style={{color:"#e63946"}}>₹{calculatedPrice.toLocaleString("en-IN")}</span>
-                  </div>
-                )}
               </div>
             )}
           </form.Field>
+
+          {calculatedPrice > 0 && (
+            <div style={{
+              marginTop: "10px",
+              marginBottom: "4px",
+              padding: "8px 12px",
+              background: "#f0faf4",
+              borderRadius: "8px",
+              border: "1px solid #b7e4c7",
+              fontWeight: "600",
+              fontSize: "14px",
+              color: "#1b4332"
+            }}>
+              {nightsCount} night{nightsCount !== 1 ? "s" : ""} &times; &#8377;{numericPrice.toLocaleString("en-IN")} = <span style={{ color: "#e63946" }}>&#8377;{calculatedPrice.toLocaleString("en-IN")}</span>
+            </div>
+          )}
           <form.Field
             name="guests"
             validators={{
