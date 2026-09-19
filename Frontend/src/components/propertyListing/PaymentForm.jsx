@@ -14,7 +14,9 @@ const PaymentForm = ({
   propertyId,
   currentBookings,
 }) => {
+  const numericPrice = Number(price) || 0;
   const [calculatedPrice, setCalulatedPrice] = useState(0);
+  const [nightsCount, setNightsCount] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { RangePicker } = DatePicker;
@@ -49,9 +51,8 @@ const PaymentForm = ({
     onSubmit: async ({ value }) => {
       const [checkinDate, checkoutDate] = value.dateRange || [];
       const diffNights = moment(checkoutDate, "YYYY-MM-DD").diff(moment(checkinDate, "YYYY-MM-DD"), "days");
-      const nightsCount = diffNights > 0 ? diffNights : 1;
-      const nightlyPrice = Number(price) || 500;
-      const finalTotalPrice = calculatedPrice > 0 ? calculatedPrice : nightlyPrice * nightsCount;
+      const nights = diffNights > 0 ? diffNights : 1;
+      const finalTotalPrice = calculatedPrice > 0 ? calculatedPrice : numericPrice * nights;
       const { name, guests, phoneNumber } = value;
 
       if (name && guests && phoneNumber && checkinDate && checkoutDate) {
@@ -59,7 +60,7 @@ const PaymentForm = ({
           setPaymentDetails({
             checkinDate: checkinDate,
             checkoutDate: checkoutDate,
-            nights: nightsCount,
+            nights: nights,
             totalPrice: finalTotalPrice,
             propertyName,
             address,
@@ -101,18 +102,26 @@ const PaymentForm = ({
                       field.handleChange(dateString);
                       const [checkin, checkout] = dateString;
                       if (checkin && checkout) {
-                        const nights = moment(checkout, "YYYY-MM-DD").diff(
+                        const n = moment(checkout, "YYYY-MM-DD").diff(
                           moment(checkin, "YYYY-MM-DD"),
                           "days"
                         );
-                        const total = price * nights;
+                        const nights = n > 0 ? n : 1;
+                        const total = numericPrice * nights;
                         setCalulatedPrice(total);
+                        setNightsCount(nights);
                       } else {
                         setCalulatedPrice(0);
+                        setNightsCount(0);
                       }
                     }}
                   />
                 </Space>
+                {calculatedPrice > 0 && (
+                  <div style={{ marginTop: "8px", fontWeight: "600", color: "#222" }}>
+                    {nightsCount} night{nightsCount !== 1 ? "s" : ""} × ₹{numericPrice} = <span style={{color:"#e63946"}}>₹{calculatedPrice.toLocaleString("en-IN")}</span>
+                  </div>
+                )}
               </div>
             )}
           </form.Field>
@@ -183,7 +192,9 @@ const PaymentForm = ({
               Login to Book
             </button>
           ) : (
-            <button>Book this place &#8377; {calculatedPrice}</button>
+            <button type="submit">
+              Book this place ₹{calculatedPrice > 0 ? calculatedPrice.toLocaleString("en-IN") : numericPrice}
+            </button>
           )}
         </div>
       </form>
