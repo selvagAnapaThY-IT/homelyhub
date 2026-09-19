@@ -14,9 +14,9 @@ const ResetPassword = () => {
       password: "",
       passwordConfirm: "",
     },
-    onSubmit: ({ value }) => {
+    onSubmit: async ({ value }) => {
       console.log(value);
-      dispatch(resetPassword(value, token));
+      await dispatch(resetPassword(token, value));
       toast.success("Password has been changed successfully");
       navigate("/login");
     },

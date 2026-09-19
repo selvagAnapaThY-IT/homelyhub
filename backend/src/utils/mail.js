@@ -53,6 +53,7 @@ const sendMail = async (options) => {
     await transporter.sendMail(mail);
   } catch (error) {
     console.error("Email Failed", error);
+    throw error;
   }
 };
 

@@ -12,9 +12,9 @@ const ForgetPassword = () => {
     defaultValues: {
       email: "",
     },
-    onSubmit: ({ value }) => {
+    onSubmit: async ({ value }) => {
       console.log(value);
-      dispatch(forgotPassword(value.email));
+      await dispatch(forgotPassword(value.email));
       toast.success("Email Sent! Please Check your Email");
     },
   });
