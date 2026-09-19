@@ -60,8 +60,12 @@ export const currentUser = () => async (dispatch) => {
 
         dispatch(UserActions.getCurrentUser(data.user));
     } catch (error) {
-        localStorage.removeItem("token");
-        dispatch(UserActions.getLogout());
+        // Only logout if the server explicitly says 401 (invalid token)
+        // Don't logout on network errors or 500s - that clears valid sessions
+        if (error.response?.status === 401) {
+            localStorage.removeItem("token");
+            dispatch(UserActions.getLogout());
+        }
     }
 };
 

@@ -59,9 +59,8 @@ const bookingSchema = new mongoose.Schema(
     }
 );
 
-bookingSchema.pre(/^find/, function (next) {
+bookingSchema.pre(/^find/, async function () {
     this.populate("property");
-    next();
 });
 
 const Booking = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
