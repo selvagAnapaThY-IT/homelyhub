@@ -39,6 +39,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/rent/user", router);
 app.use("/api/v1/rent/listings", propertyRouter);
 app.use("/api/v1/rent/booking", bookingRouter);
+app.use("/api/v1/rent/user/booking", bookingRouter);
 app.use("/api/v1/rent/trip", tripRouter);
 // Server
 const PORT = process.env.PORT || 8080;
