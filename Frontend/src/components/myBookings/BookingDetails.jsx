@@ -12,12 +12,13 @@ const BookingDetails = () => {
   // STATIC: was `useSelector((state) => state.booking)`.
   // TODO: replace with your own booking details fetching logic.
   //const [bookingDetails, setBookingDetails] = useState(STATIC_BOOKING_DETAILS);
-const {bookingDetails}=useSelector((state)=>state.booking);
+  const { user } = useSelector((state) => state.user);
+  const { bookingDetails } = useSelector((state) => state.booking);
   useEffect(() => {
-    // TODO: fetch the booking details for `bookingId` here and set them below.
-    // Statically we just look the booking up in the placeholder data.
-    dispatch(fetchBookingDetails(bookingId));
-  }, [dispatch,bookingId]);
+    if (user && bookingId) {
+      dispatch(fetchBookingDetails(bookingId));
+    }
+  }, [dispatch, bookingId, user]);
 
   console.log(bookingDetails);
 

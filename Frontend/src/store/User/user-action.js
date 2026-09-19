@@ -60,6 +60,7 @@ export const currentUser = () => async (dispatch) => {
 
         dispatch(UserActions.getCurrentUser(data.user));
     } catch (error) {
+        localStorage.removeItem("token");
         dispatch(UserActions.getLogout());
     }
 };

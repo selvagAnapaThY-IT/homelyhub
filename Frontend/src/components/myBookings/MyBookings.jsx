@@ -10,12 +10,14 @@ const MyBookings = () => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
   const { bookings, loading } = useSelector((state) => state.booking);
 
-
   useEffect(() => {
-    dispatch(fetchUserBookings());
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchUserBookings());
+    }
+  }, [dispatch, user]);
 
   console.log(bookings);
 
