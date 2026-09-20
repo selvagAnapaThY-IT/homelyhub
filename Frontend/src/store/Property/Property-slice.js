@@ -21,7 +21,7 @@ const propertySlice = createSlice({
                 state.totalProperties = payload.length;
             } else if (payload && typeof payload === 'object') {
                 state.properties = payload.data || payload.properties || [];
-                state.totalProperties = payload.no_of_responses ?? payload.totalProperties ?? state.properties.length;
+                state.totalProperties = payload.totalProperties ?? payload.no_of_responses ?? state.properties.length;
             } else {
                 state.properties = [];
                 state.totalProperties = 0;

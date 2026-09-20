@@ -8,7 +8,11 @@ import imagekit from "../utils/ImagekitIO.js";
 
 const getProperties = async (req, res) => {
   try {
-    const totalCount = await Property.countDocuments();
+    const countFeatures = new APIFeatures(Property.find(), req.query)
+      .filter()
+      .search();
+    const totalCount = await countFeatures.query.countDocuments();
+
     const features = new APIFeatures(Property.find().sort({ _id: -1 }), req.query)
       .filter()
       .search()

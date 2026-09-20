@@ -48,10 +48,6 @@ const Card = ({ id, image, name, address, price }) => {
 
 const PropertyList = () => {
 
-    const [currentPage, setCurrentPage] = useState({
-        page: 1
-    });
-
     const dispatch = useDispatch();
 
     // ✅ Correct Redux state
@@ -59,12 +55,23 @@ const PropertyList = () => {
         properties = [],
         totalProperties = 0,
         loading = false,
-        error = null
+        error = null,
+        searchParams = {}
     } = useSelector((state) => state.property || {});
+
+    const [currentPage, setCurrentPage] = useState({
+        page: searchParams.page || 1
+    });
 
     const lastPage = Math.ceil((totalProperties || 0) / 12);
 
     const propertyListRef = useRef(null);
+
+    useEffect(() => {
+        if (searchParams.page && searchParams.page !== currentPage.page) {
+            setCurrentPage({ page: searchParams.page });
+        }
+    }, [searchParams.page]);
 
     useEffect(() => {
 

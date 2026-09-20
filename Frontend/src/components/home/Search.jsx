@@ -21,9 +21,7 @@ const Search = () => {
 
   function searchHandler(e) {
     e.preventDefault();
-    // TODO: add your search logic here. `keyword` holds
-    // { city, guests, dateIn, dateOut }.
-    dispatch(propertyAction.updateSearchParams(keyword));
+    dispatch(propertyAction.updateSearchParams({ ...keyword, page: 1 }));
     dispatch(getAllProperties());
     setKeyword({
       city: "",

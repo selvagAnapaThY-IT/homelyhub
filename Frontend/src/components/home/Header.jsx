@@ -23,7 +23,7 @@ const Header = () => {
   };
 
   const refreshFunction = () => {
-    dispatch(propertyAction.updateSearchParams({}));
+    dispatch(propertyAction.updateSearchParams({ page: 1 }));
     dispatch(getAllProperties());
   };
 

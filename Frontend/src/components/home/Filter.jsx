@@ -25,7 +25,7 @@ const Filter = () => {
       isFirstRender.current = false;
       return;
     }
-    dispatch(propertyAction.updateSearchParams(selectedFilters));
+    dispatch(propertyAction.updateSearchParams({ ...selectedFilters, page: 1 }));
     dispatch(getAllProperties());
   }, [selectedFilters, dispatch]);
 
