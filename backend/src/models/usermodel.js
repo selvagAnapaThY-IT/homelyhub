@@ -124,7 +124,9 @@ userSchema.pre("save", async function (next) {
   // Don't store password confirmation
   this.passwordconfirm = undefined;
 
-  ;
+  if (!this.isNew) {
+    this.passwordchangeat = Date.now() - 1000;
+  }
 });
 
 

@@ -141,10 +141,14 @@ export const updatePassword = (passwords) => async (dispatch) => {
     try {
         dispatch(UserActions.getPasswordRequest());
 
-        await axiosInstance.patch(
+        const { data } = await axiosInstance.patch(
             "/v1/rent/user/updateMyPassword",
             passwords
         );
+
+        if (data && data.token) {
+            localStorage.setItem("token", data.token);
+        }
 
         dispatch(UserActions.getPasswordSuccess(true));
     } catch (error) {

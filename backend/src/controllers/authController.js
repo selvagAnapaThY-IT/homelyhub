@@ -224,7 +224,8 @@ const updatePassword = async (req, res) => {
 
     // Set the new password on the user object...
     user.password = req.body.password;
-    user.passwordConfirm = req.body.passwordConfirm;
+    user.passwordconfirm =
+      req.body.passwordConfirm || req.body.passwordconfirm;
     // ...then save(). This is important: save() runs the
     // pre-save hook, so the new password gets hashed.
     // findByIdAndUpdate would NOT run it and the password
@@ -326,8 +327,9 @@ const resetPassword = async (req, res) => {
     }
 
     // Set the new password and confirm
-    ((user.password = req.body.password),
-      (user.passwordConfirm = req.body.passwordConfirm));
+    user.password = req.body.password;
+    user.passwordconfirm =
+      req.body.passwordConfirm || req.body.passwordconfirm;
     // Wipe the token so the same link cannot be used twice
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
@@ -340,7 +342,7 @@ const resetPassword = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       status: "fail",
-      error: error.message,
+      message: error.message,
     });
   }
 };
